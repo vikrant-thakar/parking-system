@@ -27,7 +27,7 @@ function AppContent() {
       <header className="hud-header">
         <div className="brand-container">
           <div className="brand-text">
-            <h1>CYBER<span style={{color: 'var(--primary-neon)'}}>PARK</span></h1>
+            <h1>S<span style={{color: 'var(--primary-neon)'}}>PARK</span></h1>
             <p className="subtitle">INTELLIGENT PARKING SOLUTIONS</p>
           </div>
         </div>

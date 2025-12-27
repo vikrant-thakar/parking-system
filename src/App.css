@@ -4,7 +4,53 @@
   margin: 0;
   padding: 0;
   text-align: center;
-  overflow: hidden; /* Floor Navigation in Header */
+  overflow: hidden; 
+}
+
+/* APP CONTAINER */
+.app-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #000;
+}
+
+/* OVERLAY HEADER */
+.hud-header {
+  position: absolute; /* OVERLAY */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 90px; /* COMPACT */
+  z-index: 1000; /* Above Map */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  background: #000; /* SOLID BLACK */
+  /* backdrop-filter: none; REMOVED */
+  border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  pointer-events: none; 
+}
+/* Re-enable pointer events for interactive children */
+.hud-header > * { pointer-events: auto; }
+
+/* Existing Header Styles */
+.brand-text h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.5rem;
+  color: #fff;
+  margin: 0;
+  letter-spacing: 2px;
+}
+.brand-text .subtitle {
+  font-family: 'Rajdhani', sans-serif;
+  color: #aaa;
+  margin: 0;
+  font-size: 0.8rem;
+  letter-spacing: 4px;
 }
 
 .floor-nav-header {
@@ -13,14 +59,15 @@
   background: rgba(0, 0, 0, 0.3);
   padding: 5px;
   border-radius: 8px;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(0, 243, 255, 0.2);
   margin: 0 20px;
+  pointer-events: auto;
 }
 
 .floor-btn {
   background: transparent;
   border: 1px solid transparent;
-  color: var(--text-secondary);
+  color: #888;
   padding: 8px 24px;
   border-radius: 6px;
   font-family: 'Orbitron', sans-serif;
@@ -31,48 +78,47 @@
 
 .floor-btn:hover {
   background: rgba(0, 243, 255, 0.1);
-  color: var(--primary-neon);
+  color: #00f3ff;
 }
 
 .floor-btn.active {
-  background: var(--primary-neon);
+  background: #00f3ff;
   color: #000;
   box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
   font-weight: bold;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.status-panel {
+  display: flex;
+  gap: 20px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.status-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.status-item .label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.7rem;
+  color: #666;
+  letter-spacing: 1px;
 }
 
-.card {
-  padding: 2em;
+.status-item .value {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem;
+  color: #fff;
 }
+.status-item .value.online { color: #00ff00; text-shadow: 0 0 10px #00ff00; }
 
-.read-the-docs {
-  color: #888;
+/* MAIN CONTENT (MAP) */
+.main-content {
+  width: 100%;
+  height: 100%; /* Occupy full container */
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1; /* Below Header */
 }

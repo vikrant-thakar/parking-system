@@ -22,8 +22,7 @@ const AdminDashboard = () => {
       {/* Sidebar / Sidebar-like Header for compactness */}
       <header className="admin-header">
         <div className="admin-brand">
-          <h2>CYBER<span style={{color: 'var(--primary-neon)'}}>PARK</span> ADMIN</h2>
-          <span className="badge">V2.0 PRO</span>
+          <h2>S<span style={{color: 'var(--primary-neon)'}}>PARK</span> ADMIN</h2>
         </div>
         
         <div className="admin-actions">

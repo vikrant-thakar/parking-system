@@ -1,35 +1,32 @@
-/* Forensic Fix Interface (1700x1000) - FLAT 2D ALIGNMENT */
+/* Forensic Fix Interface - ARCHITECTURAL SCHEMATIC (100 Slots Restore) */
 .parking-interface {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  width: 100%; /* FIXED: Was 100vw */
-  height: 100vh;
-  overflow: hidden;
-  background: radial-gradient(circle at center, #1a253a 0%, #050b14 70%);
+  justify-content: flex-start; /* Top Align */
+  width: 100%;
+  height: 100vh; /* FULL SCREEN */
+  overflow: hidden; /* No Scroll */
+  background: #d4d4d4; /* Concrete Grey */
   position: relative;
+  padding-top: 100px; /* COMPACT: Safe Area for 90px Header */
 }
 
 /* Scaler Container */
 .scaler-container {
   width: 1700px;
-  height: 1000px; /* INCREASED HEIGHT */
+  height: 800px; /* Standard 4-Island Height */
   position: relative;
-  transform-origin: center center;
-  box-shadow: 0 0 50px rgba(0,0,0,0.5);
-  background: rgba(0,0,0,0.2);
+  transform-origin: top center; 
+  background: #e0e0e0; 
+  box-shadow: 0 0 30px rgba(0,0,0,0.1); 
+  margin-top: 0;
 }
-
-/* Floor Nav moved to App Helper */
-/* .floor-nav styles removed */
-
 
 /* Map Content */
 .mall-map-container {
   width: 100%;
   height: 100%;
-  /* perspective: 2000px; Removed for flat look */
   position: relative;
 }
 
@@ -38,15 +35,14 @@
   display: grid;
   grid-template-columns: 280px 1140px 280px; 
   width: 1700px;
-  height: 800px; /* Fixed Aggressive Height */
+  height: 800px; 
   padding-top: 30px; 
 }
 
-/* Zones - REFAC: Row Layout for Sides */
+/* Zones */
 .zone-side {
-  background: rgba(0, 20, 40, 0.4);
-  border: 2px solid rgba(0, 243, 255, 0.15);
-  border-radius: 10px;
+  background: transparent;
+  border: 2px solid #555; 
   display: flex;
   flex-direction: column; 
   justify-content: flex-start;
@@ -56,14 +52,15 @@
 }
 
 .zone-header {
-  height: 120px; /* COMPACT Header */
+  height: 120px; 
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-bottom: 2px dashed rgba(0, 243, 255, 0.1);
+  border-bottom: 2px solid #555;
   padding: 5px;
+  background: #ccc; 
 }
 
 .zone-body {
@@ -71,7 +68,8 @@
   width: 100%;
   display: flex;
   flex-direction: row; 
-  padding: 5px; /* Reduced Padding */
+  padding: 5px;
+  background: #e0e0e0;
 }
 
 .lane-column {
@@ -90,10 +88,11 @@
   padding-top: 5px; 
 }
 
+/* Center Zone */
 .zone-center {
-  background: rgba(0, 0, 0, 0.1);
-  border-left: 2px dashed rgba(255, 255, 255, 0.05);
-  border-right: 2px dashed rgba(255, 255, 255, 0.05);
+  background: #e0e0e0;
+  border-left: 2px dashed #999; 
+  border-right: 2px dashed #999;
   display: flex;
   flex-direction: column;
   justify-content: space-between; 
@@ -110,78 +109,154 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  border: 1px solid #777; 
   padding: 10px;
-  border-radius: 20px;
+  border-radius: 5px; 
   gap: 0; 
   height: 90px; 
   min-width: 1050px; 
+  background-color: #d9d9d9;
 }
 
 .island-road {
   width: 80px; 
   height: 70px; 
-  background: transparent;
+  background: #555; 
   border: none;
   position: relative;
   flex-shrink: 0;
 }
 
 /* Slot Styling */
-.slot-group { display: flex; gap: 3px; } 
-.slot-group.vertical { flex-direction: column; gap: 5px; }
+.slot-group { display: flex; gap: 2px; align-items: center; } 
+.slot-group.vertical { flex-direction: column; gap: 2px; }
 
 .slot-unit {
   width: 45px; 
-  height: 65px; /* Goldilocks Size */
-  background: rgba(30, 40, 50, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  height: 65px; 
+  background: #fdf5e6; 
+  border: 1px solid #444; 
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: 'Orbitron';
+  font-family: 'Consolas', monospace; 
+  font-weight: bold;
   font-size: 0.9rem;
-  color: #ccc;
+  color: #333;
   cursor: pointer;
   transition: all 0.2s;
-  flex-shrink: 0; /* CRITICAL: Prevent flex squash */
-  z-index: 100; /* CRITICAL: Ensure clickable above overlays */
+  flex-shrink: 0; 
+  z-index: 10;
+  border-radius: 2px;
 }
 .slot-unit:hover {
-  transform: scale(1.1);
-  z-index: 110;
-  background: rgba(255,255,255,0.15);
-  border-color: #fff;
+  transform: scale(1.05);
+  z-index: 20;
+  background: #fff;
+  border-color: #000;
 }
 .slot-unit.selected {
-  background: rgba(0, 243, 255, 0.3);
-  box-shadow: 0 0 20px var(--primary-neon);
-  border-color: #fff;
-  z-index: 120;
-  transform: scale(1.15);
+  background: #fffacd; 
+  box-shadow: 0 0 0 2px #000;
+  z-index: 30;
+  transform: scale(1.1);
 }
 
-.slot-unit.free { border-bottom: 4px solid var(--success-neon); color: var(--success-neon); }
-.slot-unit.occupied { border-bottom: 4px solid var(--danger-neon); color: var(--danger-neon); cursor: not-allowed; opacity: 0.7; }
-.slot-unit.reserved { border-bottom: 4px solid var(--secondary-neon); color: var(--secondary-neon); cursor: not-allowed; opacity: 0.7; }
+/* Status Colors */
+.slot-unit.free { color: #2e7d32; } 
+.slot-unit.occupied { 
+  background: #ffcdd2; 
+  border-color: #d32f2f;
+  color: #b71c1c; 
+}
+.slot-unit.reserved { 
+  background: #e1f5fe; 
+  border-color: #0288d1;
+  color: #01579b; 
+}
 
-/* Elements & HUD */
+/* Ramps */
 .ramp-box {
-  border: 2px solid var(--primary-neon);
-  background: rgba(0, 243, 255, 0.1);
+  border: 2px solid #bf360c; 
+  background: #ff7043; 
   padding: 15px;
   text-align: center;
   color: #fff;
-  font-family: 'Orbitron';
-  margin-bottom: 20px;
+  font-family: 'Arial', sans-serif;
+  font-weight: bold;
+  border-radius: 50%; 
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
-.amenity-block { text-align: center; color: #aaa; margin: 10px 0; }
-.amenity-icon { font-size: 2.5rem; border: 2px solid #fff; padding: 10px; border-radius: 8px; display: inline-block; margin-bottom: 5px; }
-.amenity-icon.blue { background: #004488; border-color: #0088ff; color: #fff; }
 
-/* Navigation Arrows Removed */
+.ramp-text { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+
+/* Structural Pillar */
+.pillar {
+  width: 25px; 
+  height: 25px;
+  background: #212121; 
+  margin: 2px;
+  border-radius: 2px;
+}
+
+/* Amenities */
+.amenity-core {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #555;
+  margin: 5px;
+  background: #fff;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  font-family: 'Arial Narrow', sans-serif;
+  font-weight: bold;
+  font-size: 0.8rem;
+  color: #333;
+  text-align: center;
+}
+
+.stairs {
+  width: 60px;
+  height: 80px;
+  background: repeating-linear-gradient(0deg, #e0e0e0, #e0e0e0 5px, #999 6px, #999 7px);
+  border: 1px solid #333;
+  position: relative;
+}
+.stairs::after { content: "STAIRS"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-90deg); background: #fff; padding: 2px; font-size: 0.7rem; }
+
+.lift {
+  width: 60px;
+  height: 60px;
+  background: #c8e6c9; 
+  border: 2px solid #2e7d32;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.lift::before { content: ""; position: absolute; width: 80%; height: 1px; background: #2e7d32; transform: rotate(45deg); }
+.lift::after { content: ""; position: absolute; width: 80%; height: 1px; background: #2e7d32; transform: rotate(-45deg); }
+
+.washroom {
+  width: 100px;
+  height: 40px;
+  background: #e3f2fd;
+  border: 1px solid #1565c0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: #0d47a1;
+}
 
 /* Global Overflow Fix */
 * { box-sizing: border-box; }

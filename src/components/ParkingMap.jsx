@@ -12,8 +12,10 @@ const ParkingMap = ({ onNavigate, currentFloor }) => { // CHANGED: Accept Prop
   useEffect(() => {
     const handleResize = () => {
       const scaleX = window.innerWidth / 1700;
-      const scaleY = window.innerHeight / 800; // Fit to 800px height
-      const newScale = Math.min(scaleX, scaleY) * 0.98; // MAXIMIZED (0.90 -> 0.98) 
+      // Subtract ~100px for Compact Header so map works in SAFE AREA
+      const availableHeight = window.innerHeight - 100; 
+      const scaleY = availableHeight / 800; 
+      const newScale = Math.min(scaleX, scaleY) * 0.98; 
       setScale(newScale);
     };
     
@@ -53,10 +55,39 @@ const ParkingMap = ({ onNavigate, currentFloor }) => { // CHANGED: Accept Prop
     if(onNavigate) onNavigate(`SELECTED ${slot.id}`);
   };
 
+  // Helper to insert structural pillars
+  const renderWithPillars = (list) => {
+    const items = [];
+    list.forEach((s, i) => {
+       items.push(
+         <SlotUnit 
+           key={s.id} 
+           slot={s} 
+           selected={selectedSlotId===s.id} 
+           onClick={handleSlotClick}
+         />
+       );
+       // Insert Pillar after index 2 (3rd item) and 6 (7th item)
+       if (i === 2 || i === 6) {
+         items.push(<div key={`pillar-${s.id}`} className="pillar"></div>);
+       }
+    });
+    return items;
+  };
+
+  // Calculate negative margin to remove dead space from scaling
+  // Height is 800px for 100 slots
+  const marginBottom = -1 * (800 * (1 - scale));
+
   return (
     <div className="parking-interface">
-      <div className="scaler-container" style={{ transform: `scale(${scale})` }}>
-        
+      <div 
+        className="scaler-container" 
+        style={{ 
+          transform: `scale(${scale})`,
+          marginBottom: `${marginBottom}px`
+        }}
+      >
         {/* REMOVED: Floor Nav (Now in Navbar) */}
 
         <div className="mall-map-container">
@@ -70,7 +101,7 @@ const ParkingMap = ({ onNavigate, currentFloor }) => { // CHANGED: Accept Prop
               <div className="zone-body">
                 <div className="slot-column">
                   <div className="slot-group vertical">
-                    {groupedSlots.left.map(s => <SlotUnit key={s.id} slot={s} selected={selectedSlotId===s.id} onClick={handleSlotClick}/>)}
+                    {renderWithPillars(groupedSlots.left)}
                   </div>
                 </div>
                 <div className="lane-column">
@@ -86,11 +117,11 @@ const ParkingMap = ({ onNavigate, currentFloor }) => { // CHANGED: Accept Prop
                {groupedSlots.islands.map((island) => (
                  <div key={island.id} className="parking-island">
                     <div className="slot-group">
-                      {island.left.map(s => <SlotUnit key={s.id} slot={s} selected={selectedSlotId===s.id} onClick={handleSlotClick}/>)}
+                      {renderWithPillars(island.left)}
                     </div>
                     <div className="island-road"></div>
                     <div className="slot-group">
-                      {island.right.map(s => <SlotUnit key={s.id} slot={s} selected={selectedSlotId===s.id} onClick={handleSlotClick}/>)}
+                      {renderWithPillars(island.right)}
                     </div>
                  </div>
                ))}
@@ -110,7 +141,7 @@ const ParkingMap = ({ onNavigate, currentFloor }) => { // CHANGED: Accept Prop
                 </div>
                 <div className="slot-column">
                   <div className="slot-group vertical">
-                     {groupedSlots.right.map(s => <SlotUnit key={s.id} slot={s} selected={selectedSlotId===s.id} onClick={handleSlotClick}/>)}
+                     {renderWithPillars(groupedSlots.right)}
                   </div>
                 </div>
               </div>
