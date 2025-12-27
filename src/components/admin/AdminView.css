@@ -42,6 +42,12 @@
   align-items: center;
 }
 
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Space between Title and Car */
+}
+
 .admin-brand h2 {
   font-family: 'Orbitron', sans-serif;
   margin: 0;
@@ -375,3 +381,114 @@
 
 .text-muted { color: var(--text-secondary); font-size: 0.9rem; }
 .font-mono { font-family: 'Consolas', monospace; }
+
+/* THEME TOGGLE (SIDE VIEW CAR) */
+.car-toggle {
+  width: 70px; /* Wider for side profile */
+  height: 40px;
+  position: relative;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+  padding: 0;
+}
+.car-toggle:hover { transform: scale(1.1); }
+
+.car-container {
+  width: 60px;
+  height: 30px;
+  position: relative;
+}
+
+/* CAR PARTS */
+.car-cabin {
+  width: 32px;
+  height: 14px;
+  background: #333;
+  position: absolute;
+  top: 0;
+  left: 14px; /* Centered-ish */
+  border-radius: 10px 12px 0 0; /* Roof curve */
+  z-index: 2;
+  border: 1px solid #555;
+  border-bottom: none;
+}
+
+.car-chassis {
+  width: 60px;
+  height: 16px;
+  background: #333;
+  position: absolute;
+  top: 13px; /* Below cabin */
+  left: 0;
+  border-radius: 6px 12px 4px 4px; /* Front nose curve */
+  z-index: 3;
+  border: 1px solid #555;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.car-wheel {
+  width: 12px;
+  height: 12px;
+  background: #111;
+  border: 2px solid #555;
+  border-radius: 50%;
+  position: absolute;
+  bottom: -4px;
+  z-index: 4;
+}
+.car-wheel.front { right: 8px; } /* Front is Right */
+.car-wheel.back { left: 8px; }
+
+.headlight-side {
+  width: 4px;
+  height: 8px;
+  background: #666; /* Off */
+  position: absolute;
+  top: 16px;
+  right: -1px; /* Front nose tip */
+  border-radius: 0 2px 2px 0;
+  z-index: 5;
+  transition: all 0.3s;
+}
+
+/* Light Mode Styles */
+.car-toggle.light .car-cabin,
+.car-toggle.light .car-chassis {
+  background: #d4d4d4;
+  border-color: #999;
+}
+.car-toggle.light .car-wheel {
+  border-color: #777;
+}
+
+/* BEAM EFFECT (Dark Mode Only) */
+.light-beam {
+  position: absolute;
+  top: 12px; /* Align with headlight */
+  left: 60px; /* Start at nose */
+  width: 0;
+  height: 16px;
+  background: linear-gradient(to right, rgba(255, 230, 0, 0.7), transparent);
+  transform-origin: left center;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  clip-path: polygon(0 40%, 100% 0, 100% 100%, 0 60%); /* Cone Shape */
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ACTIVE STATE (DARK MODE) */
+.car-toggle.dark .headlight-side {
+  background: #fff;
+  box-shadow: 0 0 10px #fff;
+}
+
+.car-toggle.dark .light-beam {
+  width: 120px; /* Beam expands */
+  opacity: 1;
+}

@@ -23,15 +23,28 @@ const AdminDashboard = () => {
       <header className="admin-header">
         <div className="admin-brand">
           <h2>S<span style={{color: 'var(--primary-neon)'}}>PARK</span> ADMIN</h2>
+           {/* CAR THEME TOGGLE (SIDE VIEW) */}
+           <button 
+             onClick={toggleTheme} 
+             className={`car-toggle ${theme}`}
+             title={theme === 'dark' ? "Turn Lights OFF (Light Mode)" : "Turn Lights ON (Dark Mode)"}
+           >
+             <div className="car-container">
+               <div className="car-cabin"></div>
+               <div className="car-chassis"></div>
+               <div className="car-wheel front"></div>
+               <div className="car-wheel back"></div>
+               <div className="headlight-side"></div>
+               <div className="light-beam"></div>
+             </div>
+           </button>
         </div>
         
         <div className="admin-actions">
            <button onClick={() => window.location.search = ''} className="btn-ghost">
              &larr; Back to Map
            </button>
-           <button onClick={toggleTheme} className="btn-icon">
-             {theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}
-           </button>
+
            <button onClick={resetSystem} className="btn-danger">
              Reset Data
            </button>
