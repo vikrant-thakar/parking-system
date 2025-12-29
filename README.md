@@ -28,7 +28,7 @@
 - **Interactive Theme Toggle**: A custom-built **Car Icon Toggle** that switches headlights on/off to represent Light/Dark modes.
 - **Responsive HUD**: A sleek heads-up display header for quick access to floor navigation and system status.
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 - **Frontend**: React.js (Vite)
 - **Styling**: Vanilla CSS (Variables, Grid, Flexbox, Animations)
