@@ -7,10 +7,10 @@ import './App.css';
 function AppContent() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [navStatus, setNavStatus] = useState(null);
-  const [currentFloor, setCurrentFloor] = useState('L1'); // LIFTED STATE
+  const [currentFloor, setCurrentFloor] = useState('L1');
 
   useEffect(() => {
-    // Secret URL Check
+    // Secret URL Check to enable Admin Mode
     const params = new URLSearchParams(window.location.search);
     if (params.get('admin') === 'true') {
       setIsAdmin(true);
@@ -32,7 +32,7 @@ function AppContent() {
           </div>
         </div>
 
-        {/* NEW: Floor Navigation in Header */}
+        {/* Floor Navigation Buttons */}
         <div className="floor-nav-header">
            {['L1', 'L2', 'L3'].map(floor => (
               <button 
@@ -45,7 +45,7 @@ function AppContent() {
            ))}
         </div>
         
-        {/* CENTER NAVIGATION STATUS */}
+        {/* Navigation Status HUD */}
         <div className="nav-display" style={{flex: 1, textAlign: 'center'}}>
            {navStatus && (
              <div style={{
@@ -81,7 +81,7 @@ function AppContent() {
       <main className="main-content">
         <ParkingMap 
           onNavigate={setNavStatus} 
-          currentFloor={currentFloor} // PASSING PROP
+          currentFloor={currentFloor}
         />
       </main>
     </div>

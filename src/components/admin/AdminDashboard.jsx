@@ -19,11 +19,11 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-container">
-      {/* Sidebar / Sidebar-like Header for compactness */}
+      {/* Sidebar Header */}
       <header className="admin-header">
         <div className="admin-brand">
           <h2>S<span style={{color: 'var(--primary-neon)'}}>PARK</span> ADMIN</h2>
-           {/* CAR THEME TOGGLE (SIDE VIEW) */}
+           {/* Car Theme Toggle Component */}
            <button 
              onClick={toggleTheme} 
              className={`car-toggle ${theme}`}

@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useParking } from '../context/ParkingContext'; // CHANGED: Use Context
+import { useParking } from '../context/ParkingContext';
 import './ParkingMap.css';
 
-const ParkingMap = ({ onNavigate, currentFloor }) => { // CHANGED: Accept Prop
+const ParkingMap = ({ onNavigate, currentFloor }) => {
   const { slots } = useParking();
-  // const [currentFloor, setCurrentFloor] = useState('L1'); // REMOVED: Managed by App.jsx
   const [selectedSlotId, setSelectedSlotId] = useState(null);
   const [scale, setScale] = useState(1);
 
-  // Scaler Logic: Fit 1700x800 into Window
+  // Scaler Logic: Dynamically fits the 1700x900 map into the viewport
   useEffect(() => {
     const handleResize = () => {
       const scaleX = window.innerWidth / 1700;
-      // Subtract ~100px for Compact Header so map works in SAFE AREA
+      // Subtract header height to ensure map fits within the safe area
       const availableHeight = window.innerHeight - 100; 
       const scaleY = availableHeight / 800; 
       const newScale = Math.min(scaleX, scaleY) * 0.98; 
@@ -95,7 +94,6 @@ const ParkingMap = ({ onNavigate, currentFloor }) => { // CHANGED: Accept Prop
             {/* LEFT ZONE */}
             <div className="zone-side left">
               <div className="zone-header">
-                {/* REMOVED ♿ Icon */}
                 <Ramp type="ENTRY" />
               </div>
               <div className="zone-body">
@@ -112,7 +110,6 @@ const ParkingMap = ({ onNavigate, currentFloor }) => { // CHANGED: Accept Prop
 
             {/* CENTER ZONE */}
             <div className="zone-center">
-               {/* REMOVED P Icon */}
 
                {groupedSlots.islands.map((island) => (
                  <div key={island.id} className="parking-island">
@@ -125,14 +122,11 @@ const ParkingMap = ({ onNavigate, currentFloor }) => { // CHANGED: Accept Prop
                     </div>
                  </div>
                ))}
-
-               {/* REMOVED 🚻 Icon */}
             </div>
 
             {/* RIGHT ZONE */}
             <div className="zone-side right">
               <div className="zone-header">
-                {/* REMOVED 👮 Icon */}
                 <Ramp type="EXIT" />
               </div>
               <div className="zone-body">
