@@ -7,15 +7,15 @@ export const useParking = () => useContext(ParkingContext);
 const API_URL = 'http://localhost:8000';
 
 export const ParkingProvider = ({ children }) => {
-  // --- STATE 1: SLOTS DATA (From API) ---
+  // Holds the array of parking slot objects retrieved from the database
   const [slots, setSlots] = useState([]);
 
-  // --- STATE 2: THEME (Persisted LocalStorage is fine for UI preference) ---
+  // Manages the UI theme (Light/Dark) preference, initializing from local storage if available
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('cyberpark_theme') || 'dark';
   });
 
-  // --- INITIAL LOAD ---
+  // Asynchronously retrieves the latest slot data from the backend API
   const fetchSlots = async () => {
     try {
       const res = await fetch(`${API_URL}/slots`);
@@ -26,22 +26,22 @@ export const ParkingProvider = ({ children }) => {
     }
   };
 
+  // Initializes data fetching on component mount and sets up a polling interval for real-time updates
   useEffect(() => {
     fetchSlots();
     
-    // Optional: Poll every 30s to sync overstays
+    // Periodically refreshes data every 30 seconds to ensure the UI stays synchronized with the server
     const interval = setInterval(fetchSlots, 30000); 
     return () => clearInterval(interval);
   }, []);
 
-  // --- THEME EFFECT ---
+  // Synchronizes the current theme state with the document body attribute and local storage
   useEffect(() => {
     localStorage.setItem('cyberpark_theme', theme);
     document.body.setAttribute('data-theme', theme);
   }, [theme]);
 
-  // --- ACTIONS ---
-
+  // Toggles the occupancy status of a specific slot via a POST request to the API
   const toggleStatus = async (id) => {
     try {
       const res = await fetch(`${API_URL}/slots/${id}/toggle`, { method: 'POST' });
@@ -54,6 +54,7 @@ export const ParkingProvider = ({ children }) => {
     }
   };
 
+  // Toggles the maintenance lock status for a slot, preventing standard users from occupying it
   const setMaintenance = async (id) => {
     try {
        const res = await fetch(`${API_URL}/slots/${id}/maintenance`, { method: 'POST' });
@@ -61,10 +62,9 @@ export const ParkingProvider = ({ children }) => {
          const updatedSlot = await res.json();
          setSlots(prev => prev.map(s => s.id === id ? updatedSlot : s));
        } else {
-         // Handle logic failure (e.g., locking occupied slot)
+         // Captures and warns about server-side validation errors (e.g., locking an occupied slot)
          const errorText = await res.text();
          console.warn("Maintenance rejected:", errorText);
-         // Optionally alert user here if the API returns 400
          alert("Action Failed: " + errorText);
        }
     } catch (err) {
@@ -72,18 +72,20 @@ export const ParkingProvider = ({ children }) => {
     }
   };
 
+  // Switches the global application theme between 'light' and 'dark' modes
   const toggleTheme = () => {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   };
 
+  // Performs a hard reset of the system, clearing all data on the server and reloading the client
   const resetSystem = async () => {
     if(window.confirm("RESET ALL DATA? This cannot be undone.")) {
        await fetch(`${API_URL}/api/reset`, { method: 'POST' });
-       fetchSlots(); // Reload fresh data
+       fetchSlots(); // Reload fresh data to reflect the reset state
     }
   };
 
-  // --- DEMO TOOL: Time Travel ---
+  // Debugging utility to force-trigger an overstay alert for demonstration purposes by setting a past entry time
   const simulateOverstay = async (id) => {
     try {
       const res = await fetch(`${API_URL}/slots/${id}/simulate-overstay`, { method: 'POST' });

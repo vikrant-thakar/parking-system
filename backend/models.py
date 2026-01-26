@@ -9,8 +9,8 @@ class Slot(Base):
     aisle_row = Column(Integer)
     side = Column(String)
     slot_pos = Column(Integer)
-    status = Column(String, default="FREE") # FREE, OCCUPIED, RESERVED
-    type = Column(String, default="STANDARD") # STANDARD, EV, HANDICAPPED
+    status = Column(String, default="FREE")   # Current state: 'FREE', 'OCCUPIED', or 'RESERVED'
+    type = Column(String, default="STANDARD") # Slot classification: 'STANDARD', 'EV', or 'HANDICAPPED'
     is_locked = Column(Boolean, default=False)
-    entry_time = Column(BigInteger, nullable=True) # Timestamp in ms
+    entry_time = Column(BigInteger, nullable=True) # Unix timestamp (milliseconds) of arrival
     is_overstay = Column(Boolean, default=False)

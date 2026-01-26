@@ -6,8 +6,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# DEFAULT CREDENTIALS - User update .env if needed
-# Assuming 'spark' is the database name created in PostgreSQL
+load_dotenv()
+
+# Build the database URL from environment variables, defaulting to a local PostgreSQL instance.
 SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:password@localhost/spark")
 
 engine = create_engine(

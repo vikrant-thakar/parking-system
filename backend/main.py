@@ -4,12 +4,12 @@ from typing import List
 from fastapi.middleware.cors import CORSMiddleware
 import models, schemas, database
 
-# Create Tables
+# Initialize database tables if they do not exist
 models.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI()
 
-# CORS Setup for Frontend
+# Configure Cross-Origin Resource Sharing (CORS) to allow requests from the React frontend
 origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
@@ -23,7 +23,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Dependency
+# Dependency provider for database sessions
 def get_db():
     db = database.SessionLocal()
     try:
@@ -31,12 +31,16 @@ def get_db():
     finally:
         db.close()
 
-# --- SEEDING LOGIC (Using Logic from parkingData.js) ---
+# -----------------------------------------------------------------------------
+# Database Seeding Logic
+# -----------------------------------------------------------------------------
+# Populates the database with initial slot data if the table is empty.
+# Generates 300 slots across 3 floors (L1, L2, L3) with a realistic layout.
 def seed_slots(db: Session):
     if db.query(models.Slot).first():
-        return # Already seeded
+        return # Database is already populated
 
-    # Logic adapted from parkingData.js
+    # Constants derived from the physical layout of the mall
     LEVELS = ['L1', 'L2', 'L3']
     AISLES_PER_LEVEL = 5
     SLOTS_PER_SIDE = 10
@@ -46,11 +50,11 @@ def seed_slots(db: Session):
     for level in LEVELS:
         slot_count = 1
         for aisle_row in range(AISLES_PER_LEVEL):
-            # Left
+            # Generate Left-side slots
             for s in range(SLOTS_PER_SIDE):
                 slots_data.append(create_slot_dict(level, slot_count, aisle_row, s, 'LEFT'))
                 slot_count += 1
-            # Right
+            # Generate Right-side slots
             for s in range(SLOTS_PER_SIDE):
                  slots_data.append(create_slot_dict(level, slot_count, aisle_row, s, 'RIGHT'))
                  slot_count += 1
@@ -60,7 +64,7 @@ def seed_slots(db: Session):
 
 def create_slot_dict(level, num, aisle_row, slot_pos, side):
     id_str = f"{level}-{str(num).zfill(3)}"
-    # Simple default state for DB
+    # Assign special types based on slot number pattern (EV every 15th, Handicapped every 20th)
     return models.Slot(
         id=id_str,
         floor=level,
@@ -80,11 +84,13 @@ def on_startup():
     seed_slots(db)
     db.close()
 
-# --- ENDPOINTS ---
+# -----------------------------------------------------------------------------
+# API Endpoints
+# -----------------------------------------------------------------------------
 
 @app.get("/slots", response_model=List[schemas.Slot])
 def read_slots(db: Session = Depends(get_db)):
-    # Dynamic Overstay Check on every fetch
+    # Calculate overstay status dynamically based on current server time
     import time
     now_ms = int(time.time() * 1000)
     
@@ -94,6 +100,7 @@ def read_slots(db: Session = Depends(get_db)):
     for slot in slots:
         if slot.status == 'OCCUPIED' and slot.entry_time:
             duration = now_ms - slot.entry_time
+            # Mark as overstay if occupied for more than 2 hours
             if duration > (2 * 3600 * 1000) and not slot.is_overstay:
                 slot.is_overstay = True
                 dirty = True
@@ -117,10 +124,12 @@ def toggle_slot_status(slot_id: str, db: Session = Depends(get_db)):
 
     import time
     if slot.status == 'FREE':
+        # Occupy the slot and record entry time
         slot.status = 'OCCUPIED'
         slot.entry_time = int(time.time() * 1000)
         slot.is_overstay = False
     else:
+        # Free the slot and clear timestamps
         slot.status = 'FREE'
         slot.entry_time = None
         slot.is_overstay = False
@@ -138,6 +147,7 @@ def set_maintenance(slot_id: str, db: Session = Depends(get_db)):
     if not slot.is_locked and slot.status == 'OCCUPIED':
         raise HTTPException(status_code=400, detail="Cannot lock occupied slot")
     
+    # Toggle maintenance lock status
     slot.is_locked = not slot.is_locked
     slot.status = 'RESERVED' if slot.is_locked else 'FREE'
     slot.entry_time = None
@@ -149,7 +159,7 @@ def set_maintenance(slot_id: str, db: Session = Depends(get_db)):
 
 @app.post("/api/reset")
 def reset_system(db: Session = Depends(get_db)):
-    # Reset all to FREE
+    # Emergancy Reset: Sets all slots to FREE and clears all locks/timers
     db.query(models.Slot).update({
         models.Slot.status: 'FREE',
         models.Slot.entry_time: None,

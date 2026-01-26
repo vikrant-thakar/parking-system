@@ -7,11 +7,11 @@ const ParkingMap = ({ onNavigate, currentFloor }) => {
   const [selectedSlotId, setSelectedSlotId] = useState(null);
   const [scale, setScale] = useState(1);
 
-  // Scaler Logic: Dynamically fits the 1700x900 map into the viewport
+  // Dynamically calculates the optimal scale factor to fit the 1700x900 map layout within the current browser window, ensuring the interface remains fully visible without scrolling.
   useEffect(() => {
     const handleResize = () => {
       const scaleX = window.innerWidth / 1700;
-      // Subtract header height to ensure map fits within the safe area
+      // Subtracts the header height (100px) from the viewport height to calculate the safe vertical area for the map
       const availableHeight = window.innerHeight - 100; 
       const scaleY = availableHeight / 800; 
       const newScale = Math.min(scaleX, scaleY) * 0.98; 
@@ -54,7 +54,7 @@ const ParkingMap = ({ onNavigate, currentFloor }) => {
     if(onNavigate) onNavigate(`SELECTED ${slot.id}`);
   };
 
-  // Helper to insert structural pillars
+  // Iterates through a list of slots and injects decorative "pillar" elements at specific indices (3rd and 7th positions) to simulate structural support beams in the parking garage.
   const renderWithPillars = (list) => {
     const items = [];
     list.forEach((s, i) => {
@@ -74,8 +74,8 @@ const ParkingMap = ({ onNavigate, currentFloor }) => {
     return items;
   };
 
-  // Calculate negative margin to remove dead space from scaling
-  // Height is 800px for 100 slots
+  // Calculates a negative margin to offset the whitespace created by the CSS scale transform, preventing empty space at the bottom of the viewport.
+  // The base reference height is 800px for the 100-slot layout.
   const marginBottom = -1 * (800 * (1 - scale));
 
   return (

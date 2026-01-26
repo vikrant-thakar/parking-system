@@ -6,7 +6,7 @@ import './AdminView.css';
 const AdminDashboard = () => {
   const { slots, toggleTheme, theme, resetSystem } = useParking();
 
-  // Stats Logic
+  // Computes real-time parking statistics (total, occupied, reserved, etc.) for the dashboard overview.
   const stats = useMemo(() => {
     const total = slots.length;
     const occupied = slots.filter(s => s.status === 'OCCUPIED').length;
@@ -19,11 +19,11 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-container">
-      {/* Sidebar Header */}
+      {/* Navigation sidebar containing branding, theme toggle, and system reset controls. */}
       <header className="admin-header">
         <div className="admin-brand">
           <h2>S<span style={{color: 'var(--primary-neon)'}}>PARK</span> ADMIN</h2>
-           {/* Car Theme Toggle Component */}
+           {/* Interactive vehicle component that toggles the application theme (Headlights ON/OFF) on click. */}
            <button 
              onClick={toggleTheme} 
              className={`car-toggle ${theme}`}
@@ -51,10 +51,10 @@ const AdminDashboard = () => {
         </div>
       </header>
 
-      {/* Main Content */}
+      {/* Primary content area for displaying analytical cards and the slot management table. */}
       <main className="admin-main">
         
-        {/* STATS ROW */}
+        {/* Grid layout displaying key performance indicators (KPIs) like total slots, availability, and active alerts. */}
         <div className="stats-grid">
            <div className="stat-card">
              <h3>Total Slots</h3>
@@ -79,14 +79,14 @@ const AdminDashboard = () => {
            </div>
         </div>
 
-        {/* ALERTS SECTION (Conditional) */}
+        {/* Conditionally renders a high-visibility alert banner if any vehicles have exceeded the maximum parking duration. */}
         {stats.overstay > 0 && (
           <div className="alert-banner">
              ⚠️ <strong>PAYMENT ALERT:</strong> {stats.overstay} vehicles have exceeded the 2-hour limit. Please check the table below.
           </div>
         )}
 
-        {/* SLOT MANAGEMENT TABLE - Fill Remaining Space */}
+        {/* Comprehensive data table listing all parking slots with filtering, searching, and administrative action capabilities. */}
         <SlotTable slots={slots} />
 
       </main>

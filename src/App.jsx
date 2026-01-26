@@ -10,7 +10,7 @@ function AppContent() {
   const [currentFloor, setCurrentFloor] = useState('L1');
 
   useEffect(() => {
-    // Secret URL Check to enable Admin Mode
+    // Inspects the URL query parameters for the 'admin=true' flag to conditionally enable access to the administrative dashboard.
     const params = new URLSearchParams(window.location.search);
     if (params.get('admin') === 'true') {
       setIsAdmin(true);
@@ -23,7 +23,7 @@ function AppContent() {
 
   return (
     <div className="app-container">
-      {/* HUD Header */}
+      {/* Heads-Up Display (HUD) Header containing branding, navigation, and system status */}
       <header className="hud-header">
         <div className="brand-container">
           <div className="brand-text">
@@ -32,7 +32,7 @@ function AppContent() {
           </div>
         </div>
 
-        {/* Floor Navigation Buttons */}
+        {/* Interactive Floor Navigation Controls (L1, L2, L3) */}
         <div className="floor-nav-header">
            {['L1', 'L2', 'L3'].map(floor => (
               <button 
@@ -45,7 +45,7 @@ function AppContent() {
            ))}
         </div>
         
-        {/* Navigation Status HUD */}
+        {/* Dynamic Navigation Status Display (e.g., "SELECTED L1-001") */}
         <div className="nav-display" style={{flex: 1, textAlign: 'center'}}>
            {navStatus && (
              <div style={{
