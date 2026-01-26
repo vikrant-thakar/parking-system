@@ -13,7 +13,7 @@
 ### 2. **Real-Time Data Management**
 
 - **Live Status Tracking**: Instant updates on slot status (Free, Occupied, Reserved).
-- **Multi-Floor Support**: Seamless switching between L1, L2, and L3 floors.
+- **Multi-Floor Support**: Seamless switching floors.
 - **Context API Integration**: Centralized state management for consistent data across the Map and Admin Panel.
 
 ### 3. **Admin Dashboard**
@@ -22,11 +22,6 @@
 - **Overstay Alerts**: Pulse warning system for vehicles parked longer than 2 hours.
 - **Slot Management Table**: Filterable and searchable list of all slots with quick-action controls to Lock or Reset slots.
 
-### 4. **Premium UI/UX**
-
-- **"Organic Luxury" Aesthetic**: High-contrast dark mode elements with neon accents (`#00F3FF`, `#FF003C`).
-- **Interactive Theme Toggle**: A custom-built **Car Icon Toggle** that switches headlights on/off to represent Light/Dark modes.
-- **Responsive HUD**: A sleek heads-up display header for quick access to floor navigation and system status.
 
 ## 🛠️ Technology Stack
 

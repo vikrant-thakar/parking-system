@@ -1,31 +1,38 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { parkingSlots as initialSlots } from '../parkingData';
 
+// Use empty initial array, data comes from Backend
 const ParkingContext = createContext();
 
 export const useParking = () => useContext(ParkingContext);
+const API_URL = 'http://localhost:8000';
 
 export const ParkingProvider = ({ children }) => {
-  // --- STATE 1: SLOTS DATA (Persisted) ---
-  const [slots, setSlots] = useState(() => {
-    const saved = localStorage.getItem('cyberpark_slots');
-    return saved ? JSON.parse(saved) : initialSlots.map(s => ({
-      ...s,
-      entryTime: null, // New Field: Timestamp
-      isLocked: false, // New Field: Maintenance Lock
-      isOverstay: false // New Field: Overstay Alert
-    }));
-  });
+  // --- STATE 1: SLOTS DATA (From API) ---
+  const [slots, setSlots] = useState([]);
 
-  // --- STATE 2: THEME (Persisted) ---
+  // --- STATE 2: THEME (Persisted LocalStorage is fine for UI preference) ---
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('cyberpark_theme') || 'dark';
   });
 
-  // --- PERSISTENCE EFFECT ---
+  // --- INITIAL LOAD ---
+  const fetchSlots = async () => {
+    try {
+      const res = await fetch(`${API_URL}/slots`);
+      const data = await res.json();
+      setSlots(data);
+    } catch (err) {
+      console.error("Failed to load slots:", err);
+    }
+  };
+
   useEffect(() => {
-    localStorage.setItem('cyberpark_slots', JSON.stringify(slots));
-  }, [slots]);
+    fetchSlots();
+    
+    // Optional: Poll every 30s to sync overstays
+    const interval = setInterval(fetchSlots, 30000); 
+    return () => clearInterval(interval);
+  }, []);
 
   // --- THEME EFFECT ---
   useEffect(() => {
@@ -33,100 +40,60 @@ export const ParkingProvider = ({ children }) => {
     document.body.setAttribute('data-theme', theme);
   }, [theme]);
 
-  // --- SYSTEM TICKER (Overstay Check) ---
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = Date.now();
-      setSlots(prev => prev.map(slot => {
-        if (slot.status === 'OCCUPIED' && slot.entryTime) {
-          const durationMs = now - slot.entryTime;
-          const hours = durationMs / (1000 * 60 * 60);
-          // ALERT: If > 2 Hours
-          if (hours > 2 && !slot.isOverstay) {
-            return { ...slot, isOverstay: true };
-          }
-        }
-        return slot;
-      }));
-    }, 60000); // Check every minute
-    return () => clearInterval(interval);
-  }, []);
-
   // --- ACTIONS ---
 
-  const toggleStatus = (id) => {
-    setSlots(prev => prev.map(slot => {
-      if (slot.id !== id) return slot;
-      if (slot.isLocked) return slot; // Locked slots cannot be changed nicely
-
-      if (slot.status === 'FREE') {
-        // Occupation Logic
-        return { 
-          ...slot, 
-          status: 'OCCUPIED', 
-          entryTime: Date.now(),
-          isOverstay: false 
-        };
-      } else {
-        // Free Logic
-        return { 
-          ...slot, 
-          status: 'FREE', 
-          entryTime: null, 
-          isOverstay: false 
-        };
+  const toggleStatus = async (id) => {
+    try {
+      const res = await fetch(`${API_URL}/slots/${id}/toggle`, { method: 'POST' });
+      if (res.ok) {
+        const updatedSlot = await res.json();
+        setSlots(prev => prev.map(s => s.id === id ? updatedSlot : s));
       }
-    }));
+    } catch (err) {
+      console.error("Error toggling status:", err);
+    }
   };
 
-  const setMaintenance = (id) => {
-    setSlots(prev => prev.map(slot => {
-      if (slot.id !== id) return slot;
-      
-      // LOGIC UPDATE: Cannot Lock if Occupied
-      if (!slot.isLocked && slot.status === 'OCCUPIED') {
-         alert("Cannot Lock an Occupied Slot! Please free it first.");
-         return slot;
-      }
-
-      const newLockedState = !slot.isLocked;
-      return {
-        ...slot,
-        isLocked: newLockedState,
-        status: newLockedState ? 'RESERVED' : 'FREE', // Blue Color mapping
-        entryTime: null,
-        isOverstay: false
-      };
-    }));
+  const setMaintenance = async (id) => {
+    try {
+       const res = await fetch(`${API_URL}/slots/${id}/maintenance`, { method: 'POST' });
+       if (res.ok) {
+         const updatedSlot = await res.json();
+         setSlots(prev => prev.map(s => s.id === id ? updatedSlot : s));
+       } else {
+         // Handle logic failure (e.g., locking occupied slot)
+         const errorText = await res.text();
+         console.warn("Maintenance rejected:", errorText);
+         // Optionally alert user here if the API returns 400
+         alert("Action Failed: " + errorText);
+       }
+    } catch (err) {
+      console.error("Error setting maintenance:", err);
+    }
   };
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   };
 
-  const resetSystem = () => {
+  const resetSystem = async () => {
     if(window.confirm("RESET ALL DATA? This cannot be undone.")) {
-       localStorage.removeItem('cyberpark_slots');
-       window.location.reload();
+       await fetch(`${API_URL}/api/reset`, { method: 'POST' });
+       fetchSlots(); // Reload fresh data
     }
   };
 
   // --- DEMO TOOL: Time Travel ---
-  const simulateOverstay = (id) => {
-    setSlots(prev => prev.map(slot => {
-      if (slot.id !== id) return slot;
-      
-      // Force Entry Time to 3 hours ago
-      const threeHoursAgo = Date.now() - (3 * 60 * 60 * 1000);
-      
-      return { 
-        ...slot, 
-        status: 'OCCUPIED', 
-        isLocked: false,
-        entryTime: threeHoursAgo,
-        isOverstay: true // Instant trigger
-      };
-    }));
+  const simulateOverstay = async (id) => {
+    try {
+      const res = await fetch(`${API_URL}/slots/${id}/simulate-overstay`, { method: 'POST' });
+      if (res.ok) {
+        const updatedSlot = await res.json();
+        setSlots(prev => prev.map(s => s.id === id ? updatedSlot : s));
+      }
+    } catch (err) {
+      console.error("Error simulating overstay:", err);
+    }
   };
 
   const value = {
