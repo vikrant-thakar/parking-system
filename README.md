@@ -2,7 +2,7 @@
 
 **SPARK** is a modern, responsive, and intelligent parking management system built with **React** and **Vite**. It is designed to provide real-time parking slot availability, intuitive navigation, and powerful administrative controls for parking operators.
 
-## 🚀 Key Features
+##  Key Features
 
 ### 1. **Interactive Parking Map**
 
@@ -23,14 +23,14 @@
 - **Slot Management Table**: Filterable and searchable list of all slots with quick-action controls to Lock or Reset slots.
 
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 - **Frontend**: React.js (Vite)
 - **Styling**: Vanilla CSS (Variables, Grid, Flexbox, Animations)
 - **Icons**: Custom CSS Shapes & Lucide React
 - **State Management**: React Context API
 
-## 📦 Installation
+##  Installation
 
 1. Clone the repository.
 2. Run `npm install` to install dependencies.
